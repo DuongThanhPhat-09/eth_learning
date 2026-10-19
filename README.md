@@ -1,91 +1,93 @@
-# Học Ethereum
+# Học Ethereum (Learn Ethereum)
 
-Website học Ethereum bằng tiếng Việt, từ con số 0 đến kiến thức cho nhà phát triển. Nội dung được biên soạn dựa trên tài liệu của [ethereum.org](https://ethereum.org).
+A website for learning Ethereum in Vietnamese, from zero all the way to developer topics. The content is based on the documentation at [ethereum.org](https://ethereum.org).
 
-## Có gì trong này?
+> All lesson content on the site is written in Vietnamese.
 
-- **77 bài học** chia thành 8 chương, đi từ cơ bản đến nâng cao
-- **Quiz** ở cuối mỗi bài để tự kiểm tra
-- **126 thuật ngữ** giải thích ngắn gọn (gas, rollup, staking…)
-- **Flashcard** để ôn thuật ngữ
-- **Ôn tập** câu hỏi ngẫu nhiên từ tất cả các bài
-- **Tìm kiếm** bài học và thuật ngữ
-- Giao diện **sáng / tối**, dùng tốt trên điện thoại
-- **Tự lưu tiến độ** học ngay trên trình duyệt, không cần đăng nhập
+## Features
 
-## Lộ trình học
+- **77 lessons** across 8 chapters, from beginner to advanced
+- **A quiz** at the end of every lesson to check what you learned
+- **126 glossary terms** with short explanations (gas, rollup, staking…)
+- **Flashcards** for practicing glossary terms
+- **Review mode** with random questions from all lessons
+- **Search** across lessons and glossary terms
+- **Light / dark** theme, works well on phones
+- **Progress is saved automatically** in your browser, no login needed
 
-| # | Chương | Mức độ | Số bài |
-|---|--------|--------|:------:|
-| 1 | Nền tảng Ethereum | Cơ bản | 9 |
-| 2 | Sử dụng Ethereum an toàn | Cơ bản | 9 |
-| 3 | Ethereum dùng để làm gì? | Cơ bản → Trung bình | 13 |
-| 4 | Staking, node và năng lượng | Trung bình | 6 |
-| 5 | Lộ trình phát triển Ethereum | Trung bình | 10 |
-| 6 | Kiến thức nền tảng cho nhà phát triển | Trung bình → Nâng cao | 11 |
-| 7 | Ethereum stack: xây dựng ứng dụng | Trung bình → Nâng cao | 9 |
-| 8 | Chủ đề nâng cao | Nâng cao | 10 |
+## Learning path
 
-Nếu bạn chỉ muốn hiểu Ethereum để sử dụng, học chương 1–5 là đủ. Chương 6–8 dành cho người muốn lập trình trên Ethereum.
+| # | Chapter | Level | Lessons |
+|---|---------|-------|:-------:|
+| 1 | Ethereum basics | Beginner | 9 |
+| 2 | Using Ethereum safely | Beginner | 9 |
+| 3 | What is Ethereum used for? | Beginner → Intermediate | 13 |
+| 4 | Staking, nodes and energy | Intermediate | 6 |
+| 5 | Ethereum roadmap | Intermediate | 10 |
+| 6 | Foundations for developers | Intermediate → Advanced | 11 |
+| 7 | The Ethereum stack: building apps | Intermediate → Advanced | 9 |
+| 8 | Advanced topics | Advanced | 10 |
 
-## Cách chạy
+If you only want to understand Ethereum as a user, chapters 1–5 are enough. Chapters 6–8 are for people who want to build on Ethereum.
 
-Bạn cần cài [Node.js](https://nodejs.org) trước.
+## How to run
+
+You need [Node.js](https://nodejs.org) installed first.
 
 ```bash
-# 1. Tải project về
+# 1. Download the project
 git clone https://github.com/DuongThanhPhat-09/eth_learning.git
 cd eth_learning
 
-# 2. Cài đặt (chỉ cần làm một lần)
+# 2. Install (only needed once)
 npm install
 
-# 3. Chạy
+# 3. Run
 npm run dev
 ```
 
-Sau đó mở trình duyệt và vào **http://127.0.0.1:5173**.
+Then open your browser and go to **http://127.0.0.1:5173**.
 
-Nhấn `Ctrl + C` trong terminal để dừng.
+Press `Ctrl + C` in the terminal to stop.
 
-> **Không muốn cài Node.js?** Bạn có thể mở thẳng file `index.html` bằng trình duyệt, trang vẫn chạy bình thường.
+> **Don't want to install Node.js?** You can open `index.html` directly in your browser and the site still works.
 
-### Lỗi "running scripts is disabled" trên Windows
+### "running scripts is disabled" error on Windows
 
-Nếu chạy `npm run dev` trong PowerShell mà gặp lỗi này, dùng lệnh sau thay thế:
+If you get this error when running `npm run dev` in PowerShell, use this command instead:
 
 ```powershell
 npm.cmd run dev
 ```
 
-Hoặc chạy lệnh này một lần để sửa hẳn:
+Or run this command once to fix it for good:
 
 ```powershell
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ```
 
-## Phím tắt
+## Keyboard shortcuts
 
-| Phím | Tác dụng |
-|------|----------|
-| `/` hoặc `Ctrl + K` | Mở tìm kiếm |
-| `←` `→` | Chuyển sang bài trước / bài sau |
-| `Esc` | Đóng tìm kiếm hoặc menu |
+| Key | Action |
+|-----|--------|
+| `/` or `Ctrl + K` | Open search |
+| `←` `→` | Go to the previous / next lesson |
+| `Esc` | Close search or the menu |
 
-## Cấu trúc thư mục
+## Project structure
 
 ```
 eth_learning/
-├── index.html        # Trang chính
+├── index.html        # Main page
 ├── css/
-│   └── styles.css    # Giao diện
+│   └── styles.css    # Styles
 └── js/
-    ├── app.js        # Xử lý hiển thị, tìm kiếm, quiz, flashcard
-    └── data/         # Nội dung bài học
+    ├── app.js        # Rendering, search, quizzes, flashcards
+    └── data/         # Lesson content
         ├── 01-basics.js
         ├── ...
         ├── 08-dev-advanced.js
-        └── glossary.js   # Danh sách thuật ngữ
+        └── glossary.js   # Glossary terms
 ```
 
-Muốn sửa hoặc thêm nội dung bài học, bạn chỉ cần chỉnh các file trong `js/data/`. Trang sẽ tự tải lại khi bạn lưu file.
+To edit or add lesson content, just change the files in `js/data/`. The page reloads automatically when you save a file.
