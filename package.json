@@ -1,0 +1,11 @@
+{
+  "name": "eth-learning",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5173"
+  },
+  "devDependencies": {
+    "vite": "^8.3.4"
+  }
+}
