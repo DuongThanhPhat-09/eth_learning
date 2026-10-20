@@ -142,6 +142,14 @@
             <div><b>${GLOSSARY.length}</b><span>thuật ngữ</span></div>
             <div><b>~${Math.round(LESSONS.reduce((s, l) => s + (l.min || 5), 0) / 60)} giờ</b><span>thời lượng</span></div>
           </div>
+          <div class="backup">
+            <small id="backupMsg" role="status">Tiến độ chỉ lưu trên trình duyệt này. Sao lưu ra file để chuyển sang máy hoặc trình duyệt khác.</small>
+            <div class="backup-actions">
+              <button class="btn small" id="exportBtn">Sao lưu ra file</button>
+              <button class="btn small" id="importBtn">Khôi phục từ file</button>
+              <input type="file" id="importInput" accept=".json,application/json" hidden>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -164,6 +172,62 @@
         <div class="tip"><h4>Đọc trang gốc</h4><p>Mỗi bài liệt kê các trang ethereum.org mà nó tóm tắt. Bấm vào để đọc bản đầy đủ và cập nhật mới nhất.</p></div>
       </div>
     </div>`;
+
+    $("#exportBtn").addEventListener("click", exportProgress);
+    $("#importBtn").addEventListener("click", () => $("#importInput").click());
+    $("#importInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      e.target.value = "";
+      if (file) importProgress(file);
+    });
+  }
+
+  // ---------- backup / restore ----------
+  function exportProgress() {
+    const data = { app: "hoc-ethereum", v: 1, exported: new Date().toISOString(), state };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `hoc-ethereum-tien-do-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    $("#backupMsg").textContent = `Đã sao lưu ${totalDone()} bài đã học.`;
+  }
+
+  // Merges a backup into the current progress, so restoring never erases anything.
+  function importProgress(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      let inc;
+      try {
+        const data = JSON.parse(reader.result);
+        if (data.app !== "hoc-ethereum" || !data.state || typeof data.state !== "object") throw new Error();
+        inc = data.state;
+      } catch (e) {
+        $("#backupMsg").textContent = "File không hợp lệ. Hãy chọn file .json được tạo bằng nút “Sao lưu ra file”.";
+        return;
+      }
+      const before = totalDone();
+      const terms = new Set(GLOSSARY.map((g) => g.t));
+      Object.keys(inc.done || {}).forEach((id) => { if (BY_ID[id]) state.done[id] = true; });
+      Object.keys(inc.known || {}).forEach((t) => { if (terms.has(t)) state.known[t] = true; });
+      Object.entries(inc.quiz || {}).forEach(([id, s]) => {
+        if (!BY_ID[id] || !Array.isArray(s) || !(s[1] > 0) || !(s[0] >= 0)) return;
+        const cur = state.quiz[id];
+        if (!cur || s[0] / s[1] > cur[0] / cur[1]) state.quiz[id] = [s[0], s[1]];
+      });
+      if (!state.last && BY_ID[inc.last]) state.last = inc.last;
+      save();
+      viewHome();
+      renderSidebar(null);
+      const added = totalDone() - before;
+      $("#backupMsg").textContent = added
+        ? `Đã khôi phục: thêm ${added} bài đã học, tổng cộng ${totalDone()}/${LESSONS.length} bài.`
+        : `Đã khôi phục. Không có bài mới, bạn vẫn có ${totalDone()}/${LESSONS.length} bài đã học.`;
+    };
+    reader.readAsText(file);
   }
 
   function viewTrack(track) {

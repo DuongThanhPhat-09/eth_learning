@@ -165,6 +165,8 @@ a.chip:hover { color: var(--accent); }
 .stats div { display: grid; }
 .stats b { font-family: var(--f-display); font-size: var(--t-lg); font-variant-numeric: tabular-nums; }
 .stats span { color: var(--muted); font-size: var(--t-xs); }
+.backup { display: grid; gap: 8px; padding-top: 14px; border-top: 1px solid var(--line); }
+.backup-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
 .section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin: 0 0 16px; }
 .section-head h2 { font-size: var(--t-xl); }
