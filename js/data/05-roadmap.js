@@ -99,10 +99,12 @@ window.COURSE.push({
     {
       id: "danksharding",
       title: "Blob, Dencun và danksharding",
-      min: 9,
+      min: 11,
       src: ["/roadmap/danksharding/", "/roadmap/dencun/", "/roadmap/fusaka/"],
       tldr: "Rollup cần đăng dữ liệu lên Ethereum. Dencun (3/2024) thêm \"blob\": vùng dữ liệu tạm thời, rẻ, có thị trường phí riêng. Fusaka (12/2025) thêm PeerDAS để node chỉ cần tải một phần dữ liệu, mở đường tăng số blob mỗi khối. Đích cuối là danksharding đầy đủ.",
       body: `
+<div class="callout analogy"><b>Hình dung đơn giản</b><p>Hãy coi Ethereum như một <strong>bảng thông báo chung</strong> mà ai cũng tin. Rollup là các "chi nhánh" xử lý giao dịch ở bên ngoài, sau đó phải dán biên bản lên bảng để ai cũng kiểm tra được.</p><p>Trước 2024, biên bản phải được <strong>chép vào sổ lưu trữ vĩnh viễn</strong> (calldata) và tranh chỗ với mọi giao dịch khác, nên rất đắt. <strong>Blob</strong> giống một <strong>tờ giấy dán tạm</strong>: ai cũng đọc được, có bảng giá riêng, và tự được gỡ xuống sau khoảng 18 ngày. Rollup chỉ cần dữ liệu "có mặt đủ lâu để mọi người kiểm tra", không cần giữ mãi mãi, nên cách này rẻ hơn rất nhiều.</p></div>
+
 <h2>Vấn đề: dữ liệu của rollup</h2>
 <p>Rollup phải đăng dữ liệu giao dịch lên Ethereum để ai cũng có thể kiểm tra và tái tạo trạng thái. Trước 2024, dữ liệu này nằm trong <em>calldata</em>, được lưu vĩnh viễn và cạnh tranh phí với mọi giao dịch khác, nên rất đắt.</p>
 
@@ -131,7 +133,18 @@ window.COURSE.push({
   <div><b>128 cột</b>Phân tán qua subnet</div>
   <div><b>Lấy mẫu</b>Mỗi node giữ vài cột, kiểm tra ngẫu nhiên</div>
 </div>
+<div class="callout analogy"><b>Hình dung đơn giản: bức tranh xếp hình</b><p>Erasure coding giống như cắt một bức tranh thành nhiều mảnh, rồi làm thêm các mảnh dự phòng sao cho <strong>bất kỳ một nửa số mảnh nào cũng đủ ghép lại cả bức tranh</strong>.</p><p>Vì vậy, muốn giấu dữ liệu, kẻ xấu phải giấu <strong>hơn một nửa</strong> số mảnh. Khi đó, mỗi lần một node bốc ngẫu nhiên một mảnh để kiểm tra, khả năng bốc trúng mảnh bị giấu là hơn 50%. Bốc 20 lần mà mảnh nào cũng có thì khả năng bị lừa còn chưa tới một phần triệu. Mỗi node chỉ làm một việc nhẹ, nhưng cả mạng cùng kiểm tra thì không ai giấu được dữ liệu.</p></div>
 <p>Fusaka cũng thêm <strong>BPO fork</strong> (EIP-7892) để tăng tham số blob qua các nâng cấp nhỏ, và giá sàn phí blob (EIP-7918) để thị trường phí blob hoạt động ổn định.</p>
+
+<h2>Ví dụ: một lần chuyển tiền trên Layer 2</h2>
+<div class="story"><b>Từng bước</b><p>Lan chuyển 10 USDC cho bạn trên một Layer 2, ví dụ Base hoặc Arbitrum.</p><ol>
+  <li>Lan bấm gửi. <strong>Sequencer</strong> của L2 nhận và xử lý giao dịch gần như ngay lập tức.</li>
+  <li>Sequencer gom giao dịch của Lan cùng hàng nghìn giao dịch khác, rồi nén lại thành một gói dữ liệu.</li>
+  <li>Gói dữ liệu được đăng lên Ethereum dưới dạng <strong>blob</strong> và trả phí blob gas.</li>
+  <li>Các node Ethereum giữ blob khoảng 18 ngày. Trong thời gian đó, bất kỳ ai cũng có thể tải về để kiểm tra rằng L2 không gian lận.</li>
+  <li>Phí của blob được chia cho tất cả giao dịch trong gói, nên phần Lan phải trả rất nhỏ.</li>
+</ol></div>
+<div class="callout info"><b>Liên quan gì đến bạn?</b><p>Phí giao dịch trên L2 hiện thường chỉ vài cent hoặc thấp hơn, và phần lớn là nhờ blob. Mỗi khối chứa được càng nhiều blob thì L2 càng xử lý được nhiều giao dịch mà phí vẫn thấp. Đó là lý do các bản nâng cấp liên tục tăng số blob.</p></div>
 
 <h2>Danksharding đầy đủ</h2>
 <p>Mục tiêu dài hạn: lấy mẫu dữ liệu hai chiều, nâng số blob lên rất cao (hàng chục đến hàng trăm mỗi khối), giúp L2 xử lý khối lượng giao dịch rất lớn với phí thấp. Tên "danksharding" đặt theo nhà nghiên cứu Dankrad Feist, "proto" theo Protolambda.</p>`,

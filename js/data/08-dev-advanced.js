@@ -73,10 +73,12 @@ event Approval(address indexed owner, address indexed spender, uint256 value)</c
     {
       id: "mev",
       title: "MEV: giá trị có thể khai thác tối đa",
-      min: 8,
+      min: 10,
       src: ["/developers/docs/mev/"],
       tldr: "MEV (maximal extractable value) là lợi nhuận có được nhờ quyền sắp xếp, chèn hoặc loại giao dịch trong khối. Searcher tìm cơ hội, builder xây khối, proposer chọn khối trả giá cao nhất. MEV có mặt tốt (chênh lệch giá, thanh lý) và mặt xấu (sandwich, rủi ro tập trung).",
       body: `
+<div class="callout analogy"><b>Hình dung đơn giản</b><p>Hãy tưởng tượng một <strong>hàng người xếp hàng ở quầy giao dịch</strong>. Ai được quyền sắp xếp thứ tự trong hàng thì có thể kiếm lời từ quyền đó: cho người trả thêm tiền chen lên trước, xếp hai người cụ thể đứng sát nhau, hoặc gạt ai đó ra khỏi hàng.</p><p>Điểm đặc biệt: trên Ethereum, giao dịch đang chờ thường <strong>công khai</strong>, nên ai cũng biết trước bạn định làm gì. "Hàng đợi" ở đây là thứ tự giao dịch trong một khối, và <strong>MEV</strong> là số tiền kiếm được nhờ quyền sắp xếp thứ tự đó.</p></div>
+
 <h2>Các bên tham gia</h2>
 <div class="flow arrows">
   <div><b>Người dùng</b>Gửi giao dịch</div>
@@ -95,6 +97,15 @@ event Approval(address indexed owner, address indexed spender, uint256 value)</c
 <tr><td>Front-running chung</td><td>Sao chép giao dịch có lợi và trả phí cao hơn.</td><td>Gây hại người dùng.</td></tr>
 <tr><td>NFT sniping</td><td>Mua NFT niêm yết giá thấp ngay lập tức.</td><td>Trung tính.</td></tr>
 </table></div>
+
+<h2>Ví dụ: Lan bị "kẹp bánh mì" (sandwich)</h2>
+<div class="story"><b>Từng bước</b><p>Lan muốn đổi 10 ETH lấy token X trên một sàn phi tập trung (DEX), với <strong>slippage 3%</strong>, nghĩa là chấp nhận giá xấu hơn dự kiến tối đa 3%.</p><ol>
+  <li>Lan gửi giao dịch. Giao dịch nằm chờ trong mempool công khai, và một bot searcher nhìn thấy nó.</li>
+  <li>Bot tính ra rằng nếu mua X ngay trước Lan, giá X sẽ tăng nhưng chưa vượt quá 3%, nên giao dịch của Lan vẫn chạy chứ không bị hủy.</li>
+  <li>Bot gửi cho builder một gói (bundle) gồm ba giao dịch theo đúng thứ tự <strong>bot mua X → Lan mua X → bot bán X</strong>, kèm tiền thưởng để được chọn.</li>
+  <li>Lan mua X ở giá đã bị đẩy lên, nên nhận ít X hơn dự kiến.</li>
+  <li>Bot bán X ngay sau đó, ở mức giá cao do chính lệnh mua của Lan tạo ra, và bỏ túi phần chênh lệch.</li>
+</ol><p><strong>Kết quả:</strong> Lan có thể mất gần 3% giá trị giao dịch (gần 0,3 ETH) mà không hề hay biết. Nếu Lan đặt slippage 0,5% hoặc gửi giao dịch qua RPC chống MEV, bot gần như không còn cơ hội kiếm lời.</p></div>
 
 <h2>Tác động tới Ethereum</h2>
 <ul>

@@ -517,10 +517,15 @@ hoàn lại            = (maxFeePerGas − phí thực trả) × gasUsed</code><
     {
       id: "pos-gasper",
       title: "Proof-of-stake: Gasper và finality",
-      min: 10,
+      min: 12,
       src: ["/developers/docs/consensus-mechanisms/pos/", "/developers/docs/consensus-mechanisms/pos/gasper/", "/developers/docs/consensus-mechanisms/pos/attestations/", "/developers/docs/consensus-mechanisms/pos/block-proposal/", "/developers/docs/consensus-mechanisms/pos/weak-subjectivity/"],
       tldr: "Validator được chia thành các ủy ban để attest mỗi epoch. Gasper kết hợp LMD-GHOST (chọn đầu chuỗi theo phiếu mới nhất) và Casper FFG (finalize các checkpoint khi có 2/3 stake). Node mới đồng bộ từ một checkpoint gần đây do weak subjectivity.",
       body: `
+<div class="callout analogy"><b>Hình dung đơn giản</b><p>Hãy coi các validator như một <strong>hội đồng rất đông người</strong>, và mỗi thành viên đã đặt cọc ETH. Cứ mỗi <strong>12 giây</strong> (một slot), một thành viên được bốc thăm để đề xuất trang sổ mới, tức là một khối. Cứ mỗi <strong>32 slot, khoảng 6,4 phút</strong> (một epoch), mỗi thành viên bỏ phiếu đúng một lần.</p><p>Mỗi lá phiếu trả lời cùng lúc hai câu hỏi:</p><ul>
+  <li><strong>"Trang mới nhất là trang nào?"</strong> Giống như đứng ở ngã ba và đi theo hướng mà nhiều người vừa chọn nhất, tính theo số tiền cọc. Đây là phần <strong>LMD-GHOST</strong>.</li>
+  <li><strong>"Mốc nào đã được chốt?"</strong> Giống như biên bản họp: khi hai mốc liên tiếp đều được ít nhất 2/3 tiền cọc ký xác nhận, mốc trước được đóng dấu và không ai sửa được nữa. Đây là phần <strong>Casper FFG</strong>.</li>
+</ul></div>
+
 <h2>Validator và ủy ban</h2>
 <ul>
   <li>Mỗi epoch, validator active được xáo trộn ngẫu nhiên (RANDAO) và chia vào các <strong>ủy ban</strong> (committee), mỗi slot có một hoặc nhiều ủy ban, mỗi ủy ban tối thiểu 128 validator.</li>
@@ -552,8 +557,17 @@ hoàn lại            = (maxFeePerGas − phí thực trả) × gasUsed</code><
 <h2>Đề xuất khối</h2>
 <p>Mỗi slot, một validator được chọn ngẫu nhiên với xác suất tỷ lệ với số dư hiệu dụng. Từ Fusaka (EIP-7917), danh sách người đề xuất của epoch tiếp theo được xác định trước, hỗ trợ các dịch vụ preconfirmation.</p>
 
+<h2>Ví dụ: giao dịch của Minh được "chốt" thế nào</h2>
+<div class="story"><b>Từng bước</b><p>Minh gửi 1 ETH lên một sàn giao dịch.</p><ol>
+  <li><strong>Giây 0:</strong> validator được bốc thăm cho slot này đề xuất một khối có chứa giao dịch của Minh.</li>
+  <li><strong>Vài giây sau:</strong> ủy ban của slot đó (ít nhất 128 validator) xem khối và bỏ phiếu "đây là đầu chuỗi", và cả mạng nhanh chóng đi theo khối này. Ví của Minh đã báo "thành công", nhưng về lý thuyết khối vẫn có thể bị thay thế.</li>
+  <li><strong>Khoảng 6 đến 13 phút sau:</strong> checkpoint đầu tiên nằm sau khối của Minh nhận được phiếu của ít nhất 2/3 tổng stake và trở thành <em>justified</em>.</li>
+  <li><strong>Khoảng 13 đến 19 phút sau:</strong> checkpoint kế tiếp cũng được justified, nên checkpoint trước nó trở thành <em>finalized</em>, kéo theo khối của Minh. Từ lúc này, muốn đảo ngược giao dịch thì ít nhất 1/3 tổng stake (hàng triệu ETH) phải ký gian lận và sẽ bị slash.</li>
+</ol><p><strong>Vì sao sàn bắt bạn chờ?</strong> Nhiều sàn chờ thêm một số khối, có khi chờ đến lúc finalized, rồi mới cộng tiền, để chắc chắn giao dịch không thể bị đảo ngược.</p></div>
+
 <h2>Weak subjectivity</h2>
-<p>Trong PoS, kẻ có khóa cũ của validator đã rút có thể tạo một lịch sử giả dài từ quá khứ (tấn công tầm xa). Vì vậy node mới (hoặc node offline quá lâu) cần đồng bộ từ một <strong>weak subjectivity checkpoint</strong> gần đây lấy từ nguồn tin cậy (bạn bè, nhiều block explorer, checkpoint sync endpoint). Khoảng an toàn hiện vào cỡ hai tuần và sẽ ngắn lại khi hàng chờ thoát thay đổi.</p>`,
+<p>Trong PoS, kẻ có khóa cũ của validator đã rút có thể tạo một lịch sử giả dài từ quá khứ (tấn công tầm xa). Vì vậy node mới (hoặc node offline quá lâu) cần đồng bộ từ một <strong>weak subjectivity checkpoint</strong> gần đây lấy từ nguồn tin cậy (bạn bè, nhiều block explorer, checkpoint sync endpoint). Khoảng an toàn hiện vào cỡ hai tuần và sẽ ngắn lại khi hàng chờ thoát thay đổi.</p>
+<div class="callout analogy"><b>Hình dung đơn giản</b><p>Bạn đi xa nhiều năm rồi trở về làng. Có người đưa bạn một cuốn sổ lịch sử "chính thức", nhưng cuốn sổ đó có thể do các thành viên hội đồng cũ viết lại. Họ đã rút tiền cọc nên không còn gì để mất. Cách an toàn là hỏi vài người bạn tin cậy "biên bản được đóng dấu gần nhất là gì?", rồi bắt đầu đọc từ đó.</p></div>`,
       keys: [
         "Validator chia ủy ban (≥128), attest mỗi epoch một lần; aggregator gộp chữ ký BLS.",
         "Attestation gồm phiếu head (LMD-GHOST) và source/target (Casper FFG).",
